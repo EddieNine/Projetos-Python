@@ -64,15 +64,17 @@ def exibir_pergunta(pergunta_atual, numero, tempo_limite):
     def mostrar_contagem():
         for t in range(tempo_limite, 0, -1):
             sys.stdout.write(f'\rTempo restante: {t} segundos...  ')
+            print(end='\r', flush=True)
             sys.stdout.flush()
             time.sleep(1)
         sys.stdout.write('\r                      \r')  # Limpa a linha depois da contagem
+        sys.stdout.flush()
 
     contagem_thread = threading.Thread(target=mostrar_contagem)
     contagem_thread.start()
 
     # Captura a resposta do usuário
-    resposta_input = int(input('\rDigite o número da sua resposta antes do tempo acabar: '))
+    resposta_input = int(input('Digite o número da sua resposta antes do tempo acabar: '))
     try:
         resposta[0] = int(resposta_input)
     except ValueError:
