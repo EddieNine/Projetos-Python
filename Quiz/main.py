@@ -5,18 +5,27 @@ import os
 def criar_perguntas():
     perguntas = [
         {
-            "pergunta": "Qual componente da inteligência emocional pode ajudar a melhorar a eficácia da comunicação em uma equipe?",
-            "opcoes": ["A) Empatia", "B) Motivação", "C) Autocontrole Emocional", "D) Autoconhecimento Emocional"],
+            "pergunta": "Qual componente da inteligência emocional "
+                        "pode ajudar a melhorar a eficácia da comunicação em uma equipe?",
+            "opcoes":
+                ["A) Empatia",
+                 "B) Motivação",
+                 "C) Autocontrole Emocional",
+                 "D) Autoconhecimento Emocional"],
             "resposta_correta": 0,
-            "feedback": "Empatia pode ajudar a melhorar a eficácia da comunicação em uma equipe, pois permite entender melhor as perspectivas e sentimentos dos colegas, facilitando uma comunicação mais clara e eficaz."
+            "feedback": "Empatia pode ajudar a melhorar a eficácia da comunicação em uma equipe, "
+                        "pois permite entender melhor as perspectivas e sentimentos dos colegas, "
+                        "facilitando uma comunicação mais clara e eficaz."
         },
         # Outras perguntas...
     ]
     return perguntas
 
 
-def contagem_regressiva(tempo_limite):
-    for t in range(tempo_limite, 0, -1):
+def contagem_regressiva():
+    # Define o tempo inicial da contagem regressiva em segundos
+    tempo = 10
+    for t in range(tempo, 0, -1):
         print(f'\rTempo restante: {t} segundos...', end='', flush=True)
         time.sleep(1)
     print('\rTempo esgotado!              ')
