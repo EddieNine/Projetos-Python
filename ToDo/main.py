@@ -2,42 +2,80 @@ import flet as ft
 import json
 import os
 
-# Definindo cores
-PRIMARY_COLOR = "#4CAF50"
-BACKGROUND_COLOR = "#E0FFFF"
-TEXT_COLOR = "#333333"
-BUTTON_TEXT_COLOR = "#FFFFFF"
+# Definindo cores e ícones
+THEMES = {
+    "light": {
+        "primary_color": "#4CAF50",
+        "background_color": "#E0FFFF",
+        "text_color": "#000000",
+        "button_text_color": "#000000"
+    },
+    "dark": {
+        "primary_color": "#333333",
+        "background_color": "#1E1E1E",
+        "text_color": "#E0E0E0",
+        "button_text_color": "#FFFFFF"
+    }
+}
+
 TASKS_FILE = "tasks.json"
 
 
 def load_tasks():
     if os.path.exists(TASKS_FILE):
-        with open(TASKS_FILE, "r") as file:
-            return json.load(file)
+        try:
+            with open(TASKS_FILE, "r") as file:
+                return json.load(file)
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON. O arquivo pode estar corrompido.")
+            return []
     return []
 
 
-def save_tasks(tasks):
+def save_tasks(task_list):
     with open(TASKS_FILE, "w") as file:
-        json.dump(tasks, file)
+        json.dump(task_list, file)
 
 
 def main(page: ft.Page):
-    page.title = "Lista de Tarefas"
-    page.bgcolor = BACKGROUND_COLOR
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.scroll = "adaptive"
+    current_theme = "light"
 
-    tasks = load_tasks()
+    def get_theme_colors(theme):
+        return THEMES[theme]
+
+    def apply_theme(theme):
+        colors = get_theme_colors(theme)
+        page.bgcolor = colors["background_color"]
+        task_input.bgcolor = colors["primary_color"]
+        add_button.bgcolor = colors["primary_color"]
+        clear_button.bgcolor = colors["primary_color"]
+        add_button.color = colors["button_text_color"]
+        clear_button.color = colors["button_text_color"]
+        task_input.color = colors["text_color"]
+        theme_toggle_button.bgcolor = colors["primary_color"]
+        theme_toggle_button.color = colors["button_text_color"]
+        page.update()
+
+    def toggle_theme(e):
+        nonlocal current_theme
+        current_theme = "dark" if current_theme == "light" else "light"
+        apply_theme(current_theme)
 
     def add_task(e):
         task_text = task_input.value
         if task_text:
             new_task = {"label": task_text, "completed": False}
-            tasks.append(new_task)
-            pending_tasks.controls.append(ft.Checkbox(label=task_text, value=False, on_change=update_task))
-            save_tasks(tasks)
+            task_list.append(new_task)
+            pending_tasks.controls.append(
+                ft.Checkbox(
+                    label=task_text,
+                    value=False,
+                    on_change=update_task,
+                    width=300,
+                    height=40
+                )
+            )
+            save_tasks(task_list)
             task_input.value = ""
             page.update()
 
@@ -45,58 +83,68 @@ def main(page: ft.Page):
         pending_tasks.controls.clear()
         completed_tasks.controls.clear()
 
-        for i, task in enumerate(tasks):
-            checkbox = ft.Checkbox(label=task["label"], value=task["completed"], on_change=toggle_task_status)
+        for i, task in enumerate(task_list):
+            checkbox = ft.Checkbox(
+                label=task["label"],
+                value=task["completed"],
+                on_change=toggle_task_status,
+                width=300,
+                height=40
+            )
             if task["completed"]:
                 completed_tasks.controls.append(checkbox)
             else:
                 pending_tasks.controls.append(checkbox)
 
-        save_tasks(tasks)
+        save_tasks(task_list)
         page.update()
 
     def toggle_task_status(e):
-        task_index = [i for i, task in enumerate(tasks) if task["label"] == e.control.label][0]
-        tasks[task_index]["completed"] = e.control.value
+        task_index = [i for i, task in enumerate(task_list) if task["label"] == e.control.label][0]
+        task_list[task_index]["completed"] = e.control.value
         update_task(None)
 
     def clear_completed(e):
-        tasks[:] = [task for task in tasks if not task["completed"]]
+        task_list[:] = [task for task in task_list if not task["completed"]]
         update_task(None)
 
     task_input = ft.TextField(
         hint_text="Adicione uma nova tarefa",
         width=300,
-        bgcolor=PRIMARY_COLOR,
-        color=BUTTON_TEXT_COLOR,
-        border=ft.InputBorder.NONE,
+        border=ft.InputBorder.NONE
     )
 
     add_button = ft.ElevatedButton(
         text="Adicionar",
-        on_click=add_task,
-        bgcolor=PRIMARY_COLOR,
-        color=BUTTON_TEXT_COLOR,
+        icon="add",  # Usando o nome do ícone como string
+        on_click=add_task
     )
 
     clear_button = ft.ElevatedButton(
         text="Remover concluídas",
-        on_click=clear_completed,
-        bgcolor=PRIMARY_COLOR,
-        color=BUTTON_TEXT_COLOR,
+        icon="clear",  # Usando o nome do ícone como string
+        on_click=clear_completed
+    )
+
+    theme_toggle_button = ft.ElevatedButton(
+        text="Alternar Tema",
+        icon="brightness_6",  # Usando o nome do ícone como string
+        on_click=toggle_theme
     )
 
     pending_tasks = ft.Column()
     completed_tasks = ft.Column()
 
-    update_task(None)
+    task_list = load_tasks()
+    apply_theme(current_theme)
 
     page.add(
         ft.Column([
             ft.Row([task_input, add_button], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-            ft.Text("Para Concluir", weight=ft.FontWeight.BOLD, size=20, color=PRIMARY_COLOR),
+            theme_toggle_button,
+            ft.Text("Para Concluir", weight=ft.FontWeight.BOLD, size=20),
             pending_tasks,
-            ft.Text("Tarefas Concluídas", weight=ft.FontWeight.BOLD, size=20, color=PRIMARY_COLOR),
+            ft.Text("Tarefas Concluídas", weight=ft.FontWeight.BOLD, size=20),
             completed_tasks,
             clear_button
         ], width=400, alignment=ft.MainAxisAlignment.CENTER)
