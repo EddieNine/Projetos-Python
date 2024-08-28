@@ -1,5 +1,6 @@
 import time
 import os
+import msvcrt  # Apenas para Windows
 
 
 def criar_perguntas():
@@ -22,39 +23,37 @@ def criar_perguntas():
     return perguntas
 
 
-def contagem_regressiva():
-    # Define o tempo inicial da contagem regressiva em segundos
-    tempo = 10
-    for t in range(tempo, 0, -1):
-        print(f'\rTempo restante: {t} segundos...', end='', flush=True)
-        time.sleep(1)
-    print('\rTempo esgotado!              ')
-
-
 def exibir_pergunta(pergunta_atual, numero, tempo_limite):
     os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela
     print(f'\nPergunta {numero + 1}: {pergunta_atual["pergunta"]}')
     for i, opcao in enumerate(pergunta_atual["opcoes"]):
         print(f'{i}. {opcao}')
 
-    print(f'\nVocê tem {tempo_limite} segundos para responder...')
-
     inicio = time.time()
     resposta = None
 
-    while time.time() - inicio < tempo_limite:
-        if resposta is None:
-            resposta = input("\nDigite o número da sua resposta: ")
+    print(f"\nVocê tem {tempo_limite} segundos para responder...")
+
+    while True:
+        tempo_decorrido = time.time() - inicio
+        tempo_restante = tempo_limite - int(tempo_decorrido)
+
+        if tempo_restante <= 0:
+            print('\nTempo esgotado!')
+            resposta = -1  # Indicador de tempo esgotado
+            break
+
+        # Verifica se uma tecla foi pressionada
+        if msvcrt.kbhit():
+            resposta = msvcrt.getche().decode('utf-8')
             if resposta.isdigit():
                 resposta = int(resposta)
                 break
-        tempo_restante = tempo_limite - int(time.time() - inicio)
-        print(f'\rTempo restante: {tempo_restante} segundos...', end='', flush=True)
-        time.sleep(1)
+            else:
+                resposta = None  # Reinicia a variável para continuar o loop
 
-    if resposta is None:
-        print('\nTempo esgotado!')
-        resposta = -1  # Indicador de tempo esgotado
+        print(f"\rTempo restante: {tempo_restante} segundos", end='', flush=True)
+        time.sleep(1)
 
     return resposta
 

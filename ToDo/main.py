@@ -7,19 +7,19 @@ THEMES = {
     "light": {
         "primary_color": "#4CAF50",
         "background_color": "#E0FFFF",
-        "text_color": "#000000",
-        "button_text_color": "#000000"
+        "text_color": "#333333",
+        "button_text_color": "#FFFFFF"
     },
     "dark": {
         "primary_color": "#333333",
         "background_color": "#1E1E1E",
         "text_color": "#E0E0E0",
-        "button_text_color": "#FFFFFF"
+        "button_text_color": "#000000"
     }
 }
 
 TASKS_FILE = "tasks.json"
-
+editing_index = None  # Variável global para rastrear o índice da tarefa sendo editada
 
 def load_tasks():
     if os.path.exists(TASKS_FILE):
@@ -31,13 +31,12 @@ def load_tasks():
             return []
     return []
 
-
 def save_tasks(task_list):
     with open(TASKS_FILE, "w") as file:
         json.dump(task_list, file)
 
-
 def main(page: ft.Page):
+    global editing_index
     current_theme = "light"
 
     def get_theme_colors(theme):
@@ -64,20 +63,25 @@ def main(page: ft.Page):
     def add_task(e):
         task_text = task_input.value
         if task_text:
-            new_task = {"label": task_text, "completed": False}
-            task_list.append(new_task)
-            pending_tasks.controls.append(
-                ft.Checkbox(
-                    label=task_text,
-                    value=False,
-                    on_change=update_task,
-                    width=300,
-                    height=40
-                )
-            )
-            save_tasks(task_list)
+            if editing_index is not None:
+                # Atualiza a tarefa existente
+                task_list[editing_index]["label"] = task_text
+                editing_index = None
+                add_button.text = "Adicionar"
+            else:
+                # Adiciona uma nova tarefa
+                new_task = {"label": task_text, "completed": False}
+                task_list.append(new_task)
+
+            update_task(None)  # Atualiza a lista de tarefas na interface
             task_input.value = ""
             page.update()
+
+    def edit_task(index):
+        global editing_index
+        editing_index = index
+        task_input.value = task_list[index]["label"]
+        add_button.text = "Salvar"
 
     def update_task(e):
         pending_tasks.controls.clear()
@@ -92,9 +96,25 @@ def main(page: ft.Page):
                 height=40
             )
             if task["completed"]:
-                completed_tasks.controls.append(checkbox)
+                completed_tasks.controls.append(
+                    ft.Row([
+                        checkbox,
+                        ft.IconButton(
+                            icon="edit",
+                            on_click=lambda e, index=i: edit_task(index)
+                        )
+                    ])
+                )
             else:
-                pending_tasks.controls.append(checkbox)
+                pending_tasks.controls.append(
+                    ft.Row([
+                        checkbox,
+                        ft.IconButton(
+                            icon="edit",
+                            on_click=lambda e, index=i: edit_task(index)
+                        )
+                    ])
+                )
 
         save_tasks(task_list)
         page.update()
@@ -116,19 +136,19 @@ def main(page: ft.Page):
 
     add_button = ft.ElevatedButton(
         text="Adicionar",
-        icon="add",  # Usando o nome do ícone como string
+        icon="add",
         on_click=add_task
     )
 
     clear_button = ft.ElevatedButton(
         text="Remover concluídas",
-        icon="clear",  # Usando o nome do ícone como string
+        icon="clear",
         on_click=clear_completed
     )
 
     theme_toggle_button = ft.ElevatedButton(
         text="Alternar Tema",
-        icon="brightness_6",  # Usando o nome do ícone como string
+        icon="brightness_6",
         on_click=toggle_theme
     )
 
@@ -149,6 +169,5 @@ def main(page: ft.Page):
             clear_button
         ], width=400, alignment=ft.MainAxisAlignment.CENTER)
     )
-
 
 ft.app(target=main)
