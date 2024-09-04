@@ -23,5 +23,14 @@ To get started with the project, follow these steps:
 
 1. **Clone the Repository:**
 
-   ```bash
-   git clone (https://github.com/EddieNine/Projetos-Python)
+   ```bash git clone
+   https://github.com/EddieNine/Projetos-Python
+   
+2. Navigate to the Project Directory:
+
+     ```bash
+      cd your-repository
+     
+4. Run the Game:
+
+Open the project in any IDE and have fun.
