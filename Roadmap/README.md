@@ -1,1 +1,27 @@
-[Link](https://github.com/EddieNine/Projetos-Python/blob/main/Roadmap/NumberGuessing.py)
+
+# 🎯 Number Guessing Project 🎯
+
+Welcome to the Number Guessing Project! Try your luck and guess the number.
+
+---
+
+## 🕹️ Play Now!
+
+[Click Here to see the code!](https://github.com/EddieNine/Projetos-Python/blob/main/Roadmap/NumberGuessing.py) 
+
+---
+
+### 📌 Project Features
+
+- **Interactive Gameplay**: Engage with a fun number guessing game.
+- **Easy Setup**: Quick and simple installation instructions.
+- **Beautiful Design**: Enjoy a clean and visually appealing interface.
+
+### 🚀 Getting Started
+
+To get started with the project, follow these steps:
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone (https://github.com/EddieNine/Projetos-Python)
