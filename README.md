@@ -9,7 +9,7 @@ Welcome to the Number Guessing Project! Try your luck and guess the number.
 [Click Here to see the code!](https://github.com/EddieNine/Projetos-Python/blob/main/Roadmap/NumberGuessing.py) 
 
 ---
-https://github.com/EddieNine/Projetos-Python/tree/main/Roadmap
+https://roadmap.sh/projects/number-guessing-game
 ---
 ### 📌 Project Features
 
