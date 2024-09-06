@@ -34,5 +34,3 @@ To get started with the project, follow these steps:
 4. Run the Game:
 
 Open the project in any IDE and have fun.
-
-https://github.com/EddieNine/Projetos-Python/blob/main/Roadmap/NumberGuessing.py
