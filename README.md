@@ -1,4 +1,3 @@
-
 # 🎯 Number Guessing Project 🎯
 
 Welcome to the Number Guessing Project! Try your luck and guess the number.
