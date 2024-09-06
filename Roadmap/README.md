@@ -8,7 +8,7 @@ Welcome to the Number Guessing Project! Try your luck and guess the number.
 ## 🕹️ Play Now!
 
 [Click Here to see the code!](https://github.com/EddieNine/Projetos-Python/blob/main/Roadmap/NumberGuessing.py) 
-[Link Acima](https://roadmap.sh/projects/number-guessing-game)
+[<Link<](https://roadmap.sh/projects/number-guessing-game)
 
 ---
 
